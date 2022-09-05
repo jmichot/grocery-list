@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FlaskBlog</title>
+  </head>
+  <body>
+    <h1>Welcome to FlaskBlog</h1>
+    {% block content %} {% for el in things %}
+    <a href="#">
+      <h2>{{ el['thing'] }}</h2>
+    </a>
+    <span class="badge badge-primary">{{ el['quantity'] }}</span>
+    <hr />
+    {% endfor %} {% endblock %}
+  </body>
+</html>

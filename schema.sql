@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS things;
+
+CREATE TABLE things (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quantity INTEGER NOT NULL, 
+    thing TEXT NOT NULL
+);

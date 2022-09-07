@@ -2,12 +2,6 @@
 
 ## Start steps
 
-Generate db file :
-
-```
-python3 init_db.py
-```
-
 Start application :
 
 ```

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>FlaskBlog</title>
-  </head>
-  <body>
-    <h1>Welcome to FlaskBlog</h1>
-    {% block content %} {% for el in things %}
-    <a href="#">
-      <h2>{{ el['thing'] }}</h2>
-    </a>
-    <span class="badge badge-primary">{{ el['quantity'] }}</span>
-    <hr />
-    {% endfor %} {% endblock %}
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>FlaskBlog</title>
+  {% include 'fragments/utils/include.html' %}
+  <link rel='stylesheet' type='text/css' media='screen' href="../static/css/index.css">
+  <script type="module" src="{{ url_for('static', filename='scripts/index.js') }}" defer></script>
+</head>
+<body>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@2.6.6/dist/quasar.umd.prod.js"></script>
+  
+  {% include 'fragments/index/layout.html' %}
+  
+</body>
 </html>

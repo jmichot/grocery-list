@@ -5,68 +5,83 @@
                 <q-item-label class="text-h6">{ el[2] }</q-item-label>
                 <q-item-label class="text-subtitle1">{ el[1] }</q-item-label>
             </q-item-section>
-            
+
             <q-item-section side>
                 <q-btn round color="green" icon="add_circle" @click="addOne(el[0])"></q-btn>
             </q-item-section>
-            
+
             <q-item-section side>
                 <q-btn round color="orange" icon="remove_circle" @click="removeOne(el[0])"></q-btn>
             </q-item-section>
-            
+
             <q-item-section side>
                 <q-btn round color="red" icon="delete" @click="deleteAll(el[0])"></q-btn>
             </q-item-section>
-            
+
             <q-item-section side>
                 <q-btn round color="primary" icon="edit" @click="alert=true;current_product_id=el[0]"></q-btn>
             </q-item-section>
-        </q-item>    
+        </q-item>
     </q-list>
-    
-    
+
+
     <q-dialog v-model="alert">
         <q-card>
             <q-card-section>
-                <div class="text-h6">Modification</div>
+                <div class="text-h6">Modify</div>
             </q-card-section>
-            
+
             <q-card-section class="q-pt-none">
-                <q-form
-                class="q-gutter-md"
-                @submit="modify"
-                >
-                <q-input
-                filled
-                v-model="new_name"
-                label="Product name *"
-                hint="Name of new product"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-                ></q-input>
-                
-                <q-input
-                filled
-                type="number"
-                v-model="new_quantity"
-                label="Product quantity *"
-                lazy-rules
-                :rules="[
+                <q-form class="q-gutter-md" @submit="modify">
+                    <q-input filled v-model="new_name" label="Product name *" hint="New name of product" lazy-rules
+                        :rules="[ val => val && val.length > 0 || 'Please type something']"></q-input>
+
+                    <q-input filled type="number" v-model="new_quantity" label="Product quantity *" lazy-rules :rules="[
                 val => val !== null && val !== '' || 'Please type the quantity',
                 val => val > 0 || 'Please type a real quantity'
-                ]"
-                ></q-input>
-                                
-                
-            
-                <div>
-                    <q-btn label="Submit" type="submit" color="primary"></q-btn>
-                    <q-btn label="Close" color="primary" flat class="q-ml-sm" v-close-popup></q-btn>               
-                </div>
+                ]"></q-input>
+
+
+
+                    <div>
+                        <q-btn label="Submit" type="submit" color="primary"></q-btn>
+                        <q-btn label="Close" color="primary" flat class="q-ml-sm" v-close-popup></q-btn>
+                    </div>
             </q-card-section>
-        </q-form>
-        
-        
-    </q-card>
-</q-dialog>
+            </q-form>
+
+
+        </q-card>
+    </q-dialog>
+
+
+    <q-dialog v-model="addProductModal">
+        <q-card>
+            <q-card-section>
+                <div class="text-h6">Add</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none">
+                <q-form class="q-gutter-md" @submit="addProduct">
+                    <q-input filled v-model="new_name" label="Product name *" hint="Name of new product" lazy-rules
+                        :rules="[ val => val && val.length > 0 || 'Please type something']"></q-input>
+
+                    <q-input filled type="number" v-model="new_quantity" label="Product quantity *" lazy-rules :rules="[
+            val => val !== null && val !== '' || 'Please type the quantity',
+            val => val > 0 || 'Please type a real quantity'
+            ]"></q-input>
+
+
+
+                    <div>
+                        <q-btn label="Submit" type="submit" color="primary"></q-btn>
+                        <q-btn label="Close" color="primary" flat class="q-ml-sm" v-close-popup></q-btn>
+                    </div>
+            </q-card-section>
+            </q-form>
+
+
+        </q-card>
+    </q-dialog>
+
 </div>

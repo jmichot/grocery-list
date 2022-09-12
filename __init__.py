@@ -77,6 +77,26 @@ def modify():
             return Response(status=NOT_FOUND)
 
 
+@app.route('/add', methods=['POST'])
+def add():
+    product_quatity = request.args.get('quantity')
+    product_name = request.args.get('name')
+    conn = get_db_connection()
+    name_already_exist = conn.execute("""Select count(*) as nb from things where thing=?""", (product_name,)).fetchall()
+    name_already_exist = name_already_exist[0]['nb']
+    if (name_already_exist > 0):
+        conn.close()
+        return Response(status=CONFLICT)
+    else :
+        res = conn.execute("""Insert into things (thing, quantity) values (?, ?)""", (product_name, product_quatity))
+        conn.commit()
+        conn.close()
+        if (res.rowcount == 1):
+            return Response(status=OK)
+        else:
+            return Response(status=NOT_FOUND)
+
+
 
 @app.route('/getAll')
 def get_all():

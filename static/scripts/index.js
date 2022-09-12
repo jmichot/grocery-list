@@ -11,7 +11,8 @@ const { createApp, ref } = Vue
         current_product_id: ref(null),
         new_name: ref(null),
         new_quantity: ref(null),
-        productListClone: ref([])
+        productListClone: ref([]),
+        addProductModal: ref(false)
 
       }
     },
@@ -68,6 +69,17 @@ const { createApp, ref } = Vue
           console.log(error);
         })
         this.alert=false;
+      },
+
+      addProduct() {
+        axios.post("/add?quantity=" + this.new_quantity + "&name=" + this.new_name)
+        .then(response => {
+          this.getAll();
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        this.addProductModal=false;
       }
 
     },

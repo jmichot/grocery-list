@@ -1,28 +1,26 @@
 <div class="full-width">
-    {% for el in things %}
-    <q-list bordered separator class="shadow-9 q-ma-md">
+    <q-list bordered separator v-for="el in productList" class="shadow-9 q-ma-md">
         <q-item>
             <q-item-section>
-                <q-item-label class="text-h6">{{ el['thing'] }}</q-item-label>
-                <q-item-label class="text-subtitle1">{{ el['quantity'] }}</q-item-label>
+                <q-item-label class="text-h6">{ el[2] }</q-item-label>
+                <q-item-label class="text-subtitle1">{ el[1] }</q-item-label>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="green" icon="add_circle"></q-btn>
+                <q-btn round color="green" icon="add_circle" @click="addOne(el[0])"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="orange" icon="remove_circle"></q-btn>
+                <q-btn round color="orange" icon="remove_circle" @click="removeOne(el[0])"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="red" icon="delete"></q-btn>
+                <q-btn round color="red" icon="delete" @click="deleteAll(el[0])"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="primary" icon="edit"></q-btn>
+                <q-btn round color="primary" icon="edit" @click="modify(el[0])"></q-btn>
             </q-item-section>
         </q-item>    
     </q-list>
-    {% endfor %} 
 </div>

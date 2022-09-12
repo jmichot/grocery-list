@@ -10,7 +10,8 @@ const { createApp, ref } = Vue
         alert: ref(false),
         current_product_id: ref(null),
         new_name: ref(null),
-        new_quantity: ref(null)
+        new_quantity: ref(null),
+        productListClone: ref([])
 
       }
     },
@@ -20,6 +21,7 @@ const { createApp, ref } = Vue
       getAll() {
         axios.get("/getAll")
         .then(response => {
+          this.productListClone = response.data;
           this.productList = response.data;
         })
         .catch(error => {
@@ -74,6 +76,20 @@ const { createApp, ref } = Vue
       await this.getAll();
     },
 
+    watch: {
+      searchText: function() {
+        if (this.searchText === '') {
+          this.productList = this.productListClone;
+        }
+        else {
+          const res = this.productListClone.filter(ele => 
+            ele[2].toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
+          );
+          this.productList = res;
+        }
+      }
+    },
+    
     delimiters: ['{', '}']
   }
 

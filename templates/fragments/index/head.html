@@ -5,9 +5,9 @@
     
         <q-toolbar-title>Header</q-toolbar-title>
     
-        <q-input dark dense standout v-model="searchText" input-class="text-right" class="q-ml-md" @keyup.enter="searchProducts(searchText)">
+        <q-input dark dense standout label="Search" v-model="searchText" input-class="text-right" class="q-ml-md" @keyup.enter="searchProducts(searchText)">
             <template v-slot:append>
-              <q-icon name="search" class="cursor-pointer" @click="searchProducts(searchText)"></q-icon>
+              <q-icon name="search" class="cursor-pointer"></q-icon>
               <q-icon v-if="searchText !== ''" name="clear" class="cursor-pointer" @click="searchText = ''"></q-icon>
             </template>
         </q-input>

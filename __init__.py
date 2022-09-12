@@ -1,5 +1,4 @@
-from http.client import NOT_FOUND, OK
-import re
+from http.client import CONFLICT, NOT_FOUND, OK
 import sqlite3
 import init_db
 from flask import Flask, render_template, jsonify, Response, request
@@ -55,6 +54,27 @@ def delete_all():
         return Response(status=OK)
     else:
         return Response(status=NOT_FOUND)
+
+
+@app.route('/modify', methods=['POST'])
+def modify():
+    product_id = request.args.get('id')
+    product_quatity = request.args.get('quantity')
+    product_name = request.args.get('name')
+    conn = get_db_connection()
+    name_already_exist = conn.execute("""Select count(*) as nb from things where thing=?""", (product_name,)).fetchall()
+    name_already_exist = name_already_exist[0]['nb']
+    if (name_already_exist > 0):
+        conn.close()
+        return Response(status=CONFLICT)
+    else :
+        res = conn.execute("""Update things set thing=?, quantity=? where id=?""", (product_name, product_quatity, product_id))
+        conn.commit()
+        conn.close()
+        if (res.rowcount == 1):
+            return Response(status=OK)
+        else:
+            return Response(status=NOT_FOUND)
 
 
 

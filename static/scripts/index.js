@@ -6,7 +6,12 @@ const { createApp, ref } = Vue
         drawer: ref(false),
         slide: ref(1),
         searchText: ref(''),
-        productList: ref([])
+        productList: ref([]),
+        alert: ref(false),
+        current_product_id: ref(null),
+        new_name: ref(null),
+        new_quantity: ref(null)
+
       }
     },
 
@@ -52,8 +57,15 @@ const { createApp, ref } = Vue
         })
       },
 
-      modify(id) {
-
+      modify() {
+        axios.post("/modify?id=" + this.current_product_id + "&quantity=" + this.new_quantity + "&name=" + this.new_name)
+        .then(response => {
+          this.getAll();
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        this.alert=false;
       }
 
     },

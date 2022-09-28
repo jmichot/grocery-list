@@ -1,6 +1,20 @@
 const { createApp, ref } = Vue
+const { useQuasar } = Quasar
 
   const app = {
+
+    setup() {
+      const $q = useQuasar()
+      return {
+        notify(color, message) {
+          $q.notify({
+            message: message,
+            color: color
+          })
+        }
+      }
+    },
+
     data() {
       return {
         drawer: ref(false),
@@ -12,13 +26,13 @@ const { createApp, ref } = Vue
         new_name: ref(null),
         new_quantity: ref(null),
         productListClone: ref([]),
-        addProductModal: ref(false)
+        addProductModal: ref(false),
 
       }
     },
 
     methods: {
-      
+
       getAll() {
         axios.get("/getAll")
         .then(response => {
@@ -27,6 +41,7 @@ const { createApp, ref } = Vue
         })
         .catch(error => {
           console.log(error);
+          this.notify('red', 'An error has occurred');
         })
       },
 
@@ -37,6 +52,7 @@ const { createApp, ref } = Vue
         })
         .catch(error => {
           console.log(error);
+          this.notify('red', 'An error has occurred');
         })
       },
 
@@ -47,6 +63,7 @@ const { createApp, ref } = Vue
         })
         .catch(error => {
           console.log(error);
+          this.notify('red', 'An error has occurred');
         })
       },
 
@@ -54,9 +71,11 @@ const { createApp, ref } = Vue
         axios.post("/deleteAll?id=" + id)
         .then(response => {
           this.getAll();
+          this.notify('primary', 'Product successfully deleted');
         })
         .catch(error => {
           console.log(error);
+          this.notify('red', 'An error has occurred');
         })
       },
 
@@ -64,9 +83,11 @@ const { createApp, ref } = Vue
         axios.post("/modify?id=" + this.current_product_id + "&quantity=" + this.new_quantity + "&name=" + this.new_name)
         .then(response => {
           this.getAll();
+          this.notify('primary', 'Successfully modified product');
         })
         .catch(error => {
           console.log(error);
+          this.notify('red', 'An error has occurred');
         })
         this.alert=false;
       },
@@ -78,6 +99,7 @@ const { createApp, ref } = Vue
         })
         .catch(error => {
           console.log(error);
+          this.notify('red', 'An error has occurred');
         })
         this.addProductModal=false;
       }

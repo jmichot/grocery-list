@@ -1,5 +1,5 @@
 from src.connexion import get_db_connection
-from http.client import CONFLICT, METHOD_NOT_ALLOWED, NOT_FOUND, OK
+from http.client import CONFLICT, METHOD_NOT_ALLOWED, NOT_FOUND, OK, SERVICE_UNAVAILABLE
 from flask import render_template, jsonify, Response, request
 
 
@@ -9,7 +9,7 @@ def configure_routes(app):
     def add_one():
         product_id = request.args.get('id')
         conn = get_db_connection()
-        res = conn.execute("""Update things set quantity=quantity+1 where id=?""", product_id)
+        res = conn.execute("""Update things set quantity=quantity+1 where id=?""", (product_id,))
         conn.commit()
         conn.close()
         if (res.rowcount == 1):
@@ -22,11 +22,15 @@ def configure_routes(app):
     def remove_one():
         product_id = request.args.get('id')
         conn = get_db_connection()
-        actual_quantity = conn.execute("""Select quantity from things where id=?""", product_id).fetchall()
+        product_not_exist = conn.execute("""Select count(*)=0 as nb from things where id=?""", (product_id,)).fetchall()
+        product_not_exist = product_not_exist[0]['nb']
+        if (product_not_exist):
+            return Response(status=NOT_FOUND, response="Product not exist")
+        actual_quantity = conn.execute("""Select quantity from things where id=?""", (product_id,)).fetchall()
         actual_quantity = actual_quantity[0]['quantity']
         res = None
         if (actual_quantity >= 1):
-            res = conn.execute("""Update things set quantity=quantity-1 where id=?""", product_id)
+            res = conn.execute("""Update things set quantity=quantity-1 where id=?""", (product_id,))
             conn.commit()
         conn.close()
         if (res == None):
@@ -39,7 +43,7 @@ def configure_routes(app):
     def delete_all():
         product_id = request.args.get('id')
         conn = get_db_connection()
-        res = conn.execute("""Delete from things where id=?""", product_id)
+        res = conn.execute("""Delete from things where id=?""", (product_id,))
         conn.commit()
         conn.close()
         if (res.rowcount == 1):
@@ -86,7 +90,7 @@ def configure_routes(app):
             if (res.rowcount == 1):
                 return Response(status=OK)
             else:
-                return Response(status=NOT_FOUND, response="Product not exist")
+                return Response(status=SERVICE_UNAVAILABLE)
 
 
 
@@ -97,6 +101,7 @@ def configure_routes(app):
         things = [tuple(row) for row in things]
         conn.close()
         return jsonify(things)
+
 
     @app.route('/')
     def index():

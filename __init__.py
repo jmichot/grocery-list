@@ -7,5 +7,5 @@ app = Flask(__name__)
 configure_routes(app)
 
 if __name__ == '__main__':
-    init_db
+    init_db.reset_db()
     app.run()

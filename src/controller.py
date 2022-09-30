@@ -1,4 +1,3 @@
-from email import message
 from src.connexion import get_db_connection
 from http.client import CONFLICT, METHOD_NOT_ALLOWED, NOT_FOUND, OK
 from flask import render_template, jsonify, Response, request

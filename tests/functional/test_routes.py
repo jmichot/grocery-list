@@ -27,33 +27,65 @@ class TestRoutes():
 
     def test_add_one_if_exist(self):
         client = self.create_client()
+        conn = get_db_connection() 
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        old_quantity = product[0]['quantity']
         url = '/addOne?id=1' 
         response = client.post(url)
         assert response.status_code == 200
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity + 1
+        product = conn.execute("""Select quantity from things where id=?""", (2,)).fetchall()
+        old_quantity = product[0]['quantity'] 
         url = '/addOne?id=2' 
         response = client.post(url)
         assert response.status_code == 200
+        product = conn.execute("""Select quantity from things where id=?""", (2,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity + 1
 
     def test_add_one_if_not_exist(self):
         client = self.create_client()
+        conn = get_db_connection() 
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        old_quantity = product[0]['quantity']
         url = '/addOne?id=3' 
         response = client.post(url)
         assert response.status_code == 404
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert old_quantity == new_quantity
 
     #=====================================================# 
 
     def test_remove_one_ok(self):
         client = self.create_client()
+        conn = get_db_connection() 
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        old_quantity = product[0]['quantity']
         url = '/removeOne?id=1' 
         response = client.post(url)
         assert response.status_code == 200
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity - 1
         response = client.post(url)
         assert response.status_code == 200
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity - 2
         response = client.post(url)
         assert response.status_code == 200
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity - 3
 
     def test_remove_one_not_allowed(self):
         client = self.create_client()
+        conn = get_db_connection() 
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        old_quantity = product[0]['quantity']
         url = '/removeOne?id=1' 
         response = client.post(url)
         assert response.status_code == 200
@@ -62,11 +94,21 @@ class TestRoutes():
         response = client.post(url)
         assert response.status_code == 200
         response = client.post(url)
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity - 3
         assert response.status_code == 405
+        product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
+        new_quantity = product[0]['quantity']
+        assert new_quantity == old_quantity - 3
 
     def test_remove_one_not_exist(self):
         client = self.create_client()
         url = '/removeOne?id=3' 
+        conn = get_db_connection() 
+        exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (3,)).fetchall()
+        exist = exist[0]['exist']
+        assert not exist
         response = client.post(url)
         assert response.status_code == 404
         
@@ -75,11 +117,22 @@ class TestRoutes():
     def test_delete_all_ok(self):
         client = self.create_client()
         url = '/deleteAll?id=1' 
+        conn = get_db_connection() 
+        exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (1,)).fetchall()
+        exist = exist[0]['exist']
+        assert exist
         response = client.post(url)
         assert response.status_code == 200
+        exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (1,)).fetchall()
+        exist = exist[0]['exist']
+        assert not exist
 
     def test_delete_all_if_not_exist(self):
         client = self.create_client()
+        conn = get_db_connection() 
+        exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (3,)).fetchall()
+        exist = exist[0]['exist']
+        assert not exist
         url = '/deleteAll?id=3' 
         response = client.post(url)
         assert response.status_code == 404
@@ -106,6 +159,10 @@ class TestRoutes():
     def test_modify_if_not_exist(self):
         client = self.create_client()
         url = '/modify?id=5&quantity=20&name=Test'
+        conn = get_db_connection() 
+        exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (5,)).fetchall()
+        exist = exist[0]['exist']
+        assert not exist
         response = client.post(url)
         assert response.status_code == 404
 

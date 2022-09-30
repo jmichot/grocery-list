@@ -6,7 +6,11 @@ const { useQuasar } = Quasar
     setup() {
       const $q = useQuasar()
       return {
-        notify(color, message) {
+        notify(color, message, error) {
+          if (error !== undefined) {
+            let code=error.response.status;
+            if (code === 404 || code === 409 || code === 405) message=error.response.data;
+          }
           $q.notify({
             message: message,
             color: color
@@ -41,7 +45,7 @@ const { useQuasar } = Quasar
         })
         .catch(error => {
           console.log(error);
-          this.notify('red', 'An error has occurred');
+          this.notify('red', 'An error has occurred', error);
         })
       },
 
@@ -52,7 +56,7 @@ const { useQuasar } = Quasar
         })
         .catch(error => {
           console.log(error);
-          this.notify('red', 'An error has occurred');
+          this.notify('red', 'An error has occurred', error);
         })
       },
 
@@ -63,7 +67,7 @@ const { useQuasar } = Quasar
         })
         .catch(error => {
           console.log(error);
-          this.notify('red', 'An error has occurred');
+          this.notify('red', 'An error has occurred', error);
         })
       },
 
@@ -75,7 +79,7 @@ const { useQuasar } = Quasar
         })
         .catch(error => {
           console.log(error);
-          this.notify('red', 'An error has occurred');
+          this.notify('red', 'An error has occurred', error);
         })
       },
 
@@ -87,7 +91,7 @@ const { useQuasar } = Quasar
         })
         .catch(error => {
           console.log(error);
-          this.notify('red', 'An error has occurred');
+          this.notify('red', 'An error has occurred', error);
         })
         this.alert=false;
       },
@@ -99,7 +103,7 @@ const { useQuasar } = Quasar
         })
         .catch(error => {
           console.log(error);
-          this.notify('red', 'An error has occurred');
+          this.notify('red', 'An error has occurred', error);
         })
         this.addProductModal=false;
       }

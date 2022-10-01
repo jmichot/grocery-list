@@ -1,0 +1,12 @@
+<html><body><h1>src\controller.py</h1>Killed 91 out of 92 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 9</h3><pre>--- src\controller.py
++++ src\controller.py
+@@ -3,7 +3,7 @@
+ from flask import render_template, jsonify, Response, request
+ 
+ 
+-def configure_routes(app, test=False):
++def configure_routes(app, test=True):
+ 
+     @app.route('/addOne', methods=['POST'])
+     def add_one():
+</pre></body></html>

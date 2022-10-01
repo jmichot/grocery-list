@@ -130,3 +130,6 @@ dmypy.json
 
 database.db
 databasetest.db
+
+.idea/
+XXdatabasetest.dbXX

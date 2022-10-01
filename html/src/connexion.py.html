@@ -1,0 +1,53 @@
+<html><body><h1>src\connexion.py</h1>Killed 3 out of 8 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 1</h3><pre>--- src\connexion.py
++++ src\connexion.py
+@@ -1,6 +1,6 @@
+ import sqlite3
+ 
+-def get_db_connection(test=False):
++def get_db_connection(test=True):
+     conn = None
+     try:
+         if test:
+</pre><h3>Mutant 2</h3><pre>--- src\connexion.py
++++ src\connexion.py
+@@ -1,7 +1,7 @@
+ import sqlite3
+ 
+ def get_db_connection(test=False):
+-    conn = None
++    conn = ""
+     try:
+         if test:
+             conn = sqlite3.connect('databasetest.db')
+</pre><h3>Mutant 5</h3><pre>--- src\connexion.py
++++ src\connexion.py
+@@ -6,7 +6,7 @@
+         if test:
+             conn = sqlite3.connect('databasetest.db')
+         else:
+-            conn = sqlite3.connect('database.db')
++            conn = sqlite3.connect('XXdatabase.dbXX')
+         conn.row_factory = sqlite3.Row
+     except sqlite3.error as e:
+         print(e)
+</pre><h3>Mutant 6</h3><pre>--- src\connexion.py
++++ src\connexion.py
+@@ -6,7 +6,7 @@
+         if test:
+             conn = sqlite3.connect('databasetest.db')
+         else:
+-            conn = sqlite3.connect('database.db')
++            conn = None
+         conn.row_factory = sqlite3.Row
+     except sqlite3.error as e:
+         print(e)
+</pre><h3>Mutant 8</h3><pre>--- src\connexion.py
++++ src\connexion.py
+@@ -9,5 +9,5 @@
+             conn = sqlite3.connect('database.db')
+         conn.row_factory = sqlite3.Row
+     except sqlite3.error as e:
+-        print(e)
++        print(None)
+     return conn
+</pre></body></html>

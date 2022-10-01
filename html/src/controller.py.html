@@ -1,4 +1,4 @@
-<html><body><h1>src\controller.py</h1>Killed 84 out of 92 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 9</h3><pre>--- src\controller.py
+<html><body><h1>src\controller.py</h1>Killed 91 out of 92 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 9</h3><pre>--- src\controller.py
 +++ src\controller.py
 @@ -3,7 +3,7 @@
  from flask import render_template, jsonify, Response, request
@@ -9,81 +9,4 @@
  
      @app.route('/addOne', methods=['POST'])
      def add_one():
-</pre><h3>Mutant 19</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -15,7 +15,7 @@
-         if (res.rowcount == 1):
-             return Response(status=OK)
-         else:
--            return Response(status=NOT_FOUND, response="Product not exist")
-+            return Response(status=NOT_FOUND, response="XXProduct not existXX")
- 
- 
-     @app.route('/removeOne', methods=['POST'])
-</pre><h3>Mutant 30</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -25,7 +25,7 @@
-         product_not_exist = conn.execute("""Select count(*)=0 as nb from things where id=?""", (product_id,)).fetchall()
-         product_not_exist = product_not_exist[0]['nb']
-         if (product_not_exist):
--            return Response(status=NOT_FOUND, response="Product not exist")
-+            return Response(status=NOT_FOUND, response="XXProduct not existXX")
-         actual_quantity = conn.execute("""Select quantity from things where id=?""", (product_id,)).fetchall()
-         actual_quantity = actual_quantity[0]['quantity']
-         res = None
-</pre><h3>Mutant 40</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -34,7 +34,7 @@
-             conn.commit()
-         conn.close()
-         if (res == None):
--            return Response(status=METHOD_NOT_ALLOWED, response="The stock is empty")
-+            return Response(status=METHOD_NOT_ALLOWED, response="XXThe stock is emptyXX")
-         if (res.rowcount == 1):
-             return Response(status=OK)
- 
-</pre><h3>Mutant 52</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -49,7 +49,7 @@
-         if (res.rowcount == 1):
-             return Response(status=OK)
-         else:
--            return Response(status=NOT_FOUND, response="Product not exist")
-+            return Response(status=NOT_FOUND, response="XXProduct not existXX")
- 
- 
-     @app.route('/modify', methods=['POST'])
-</pre><h3>Mutant 69</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -62,7 +62,7 @@
-         name_already_exist = name_already_exist[0]['nb']
-         if (name_already_exist > 0):
-             conn.close()
--            return Response(status=CONFLICT, response="Product already exist")
-+            return Response(status=CONFLICT, response="XXProduct already existXX")
-         else :
-             res = conn.execute("""Update things set thing=?, quantity=? where id=?""", (product_name, product_quatity, product_id))
-             conn.commit()
-</pre><h3>Mutant 73</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -70,7 +70,7 @@
-             if (res.rowcount == 1):
-                 return Response(status=OK)
-             else:
--                return Response(status=NOT_FOUND, response="Product not exist")
-+                return Response(status=NOT_FOUND, response="XXProduct not existXX")
- 
- 
-     @app.route('/add', methods=['POST'])
-</pre><h3>Mutant 88</h3><pre>--- src\controller.py
-+++ src\controller.py
-@@ -82,7 +82,7 @@
-         name_already_exist = name_already_exist[0]['nb']
-         if (name_already_exist > 0):
-             conn.close()
--            return Response(status=CONFLICT, response="Product already exist")
-+            return Response(status=CONFLICT, response="XXProduct already existXX")
-         else :
-             res = conn.execute("""Insert into things (thing, quantity) values (?, ?)""", (product_name, product_quatity))
-             conn.commit()
 </pre></body></html>

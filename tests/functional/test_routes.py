@@ -53,6 +53,7 @@ class TestRoutes():
         url = '/addOne?id=3' 
         response = client.post(url)
         assert response.status_code == 404
+        assert response.data == b'Product not exist'
         product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
         new_quantity = product[0]['quantity']
         assert old_quantity == new_quantity
@@ -98,6 +99,7 @@ class TestRoutes():
         new_quantity = product[0]['quantity']
         assert new_quantity == old_quantity - 3
         assert response.status_code == 405
+        assert response.data == b'The stock is empty'
         product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
         new_quantity = product[0]['quantity']
         assert new_quantity == old_quantity - 3
@@ -111,6 +113,7 @@ class TestRoutes():
         assert not exist
         response = client.post(url)
         assert response.status_code == 404
+        assert response.data == b'Product not exist'
         
     #=====================================================# 
 
@@ -136,6 +139,7 @@ class TestRoutes():
         url = '/deleteAll?id=3' 
         response = client.post(url)
         assert response.status_code == 404
+        assert response.data == b'Product not exist'
 
     #=====================================================# 
 
@@ -165,6 +169,7 @@ class TestRoutes():
         assert not exist
         response = client.post(url)
         assert response.status_code == 404
+        assert response.data == b'Product not exist'
 
     def test_modify_if_conflict(self):
         client = self.create_client()
@@ -174,6 +179,7 @@ class TestRoutes():
         url = '/modify?id=1&quantity=20&name=' + old_name
         response = client.post(url)
         assert response.status_code == 409
+        assert response.data == b'Product already exist'
         
     #=====================================================# 
     
@@ -198,6 +204,8 @@ class TestRoutes():
         url = '/add?quantity=20&name=' + old_name
         response = client.post(url)
         assert response.status_code == 409
+        assert response.data == b'Product already exist'
+
 
     #=====================================================# 
         

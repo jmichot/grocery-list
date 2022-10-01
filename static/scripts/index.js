@@ -100,6 +100,7 @@ const { useQuasar } = Quasar
         axios.post("/add?quantity=" + this.new_quantity + "&name=" + this.new_name)
         .then(response => {
           this.getAll();
+          this.notify('primary', 'Product successfully added');
         })
         .catch(error => {
           console.log(error);

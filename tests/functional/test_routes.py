@@ -8,9 +8,9 @@ from src.connexion import get_db_connection
 class TestRoutes():
 
     def create_client(self):
-        init_db.reset_db()
+        init_db.reset_db(True)
         app = Flask(__name__, template_folder='../../templates')
-        controller.configure_routes(app)
+        controller.configure_routes(app, True)
         client = app.test_client()
         return client
 
@@ -27,7 +27,7 @@ class TestRoutes():
 
     def test_add_one_if_exist(self):
         client = self.create_client()
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
         old_quantity = product[0]['quantity']
         url = '/addOne?id=1' 
@@ -47,7 +47,7 @@ class TestRoutes():
 
     def test_add_one_if_not_exist(self):
         client = self.create_client()
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
         old_quantity = product[0]['quantity']
         url = '/addOne?id=3' 
@@ -61,7 +61,7 @@ class TestRoutes():
 
     def test_remove_one_ok(self):
         client = self.create_client()
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
         old_quantity = product[0]['quantity']
         url = '/removeOne?id=1' 
@@ -83,7 +83,7 @@ class TestRoutes():
 
     def test_remove_one_not_allowed(self):
         client = self.create_client()
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         product = conn.execute("""Select quantity from things where id=?""", (1,)).fetchall()
         old_quantity = product[0]['quantity']
         url = '/removeOne?id=1' 
@@ -105,7 +105,7 @@ class TestRoutes():
     def test_remove_one_not_exist(self):
         client = self.create_client()
         url = '/removeOne?id=3' 
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (3,)).fetchall()
         exist = exist[0]['exist']
         assert not exist
@@ -117,7 +117,7 @@ class TestRoutes():
     def test_delete_all_ok(self):
         client = self.create_client()
         url = '/deleteAll?id=1' 
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (1,)).fetchall()
         exist = exist[0]['exist']
         assert exist
@@ -129,7 +129,7 @@ class TestRoutes():
 
     def test_delete_all_if_not_exist(self):
         client = self.create_client()
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (3,)).fetchall()
         exist = exist[0]['exist']
         assert not exist
@@ -141,7 +141,7 @@ class TestRoutes():
 
     def test_modify_ok(self):
         client = self.create_client()
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         product = conn.execute("""Select * from things where id=?""", (1,)).fetchall()
         old_name = product[0]['thing']
         old_quantity = product[0]['quantity']
@@ -159,7 +159,7 @@ class TestRoutes():
     def test_modify_if_not_exist(self):
         client = self.create_client()
         url = '/modify?id=5&quantity=20&name=Test'
-        conn = get_db_connection() 
+        conn = get_db_connection(True) 
         exist = conn.execute("""Select count(*)=1 as exist from things where id=?""", (5,)).fetchall()
         exist = exist[0]['exist']
         assert not exist
@@ -168,7 +168,7 @@ class TestRoutes():
 
     def test_modify_if_conflict(self):
         client = self.create_client()
-        conn = get_db_connection()
+        conn = get_db_connection(True)
         product = conn.execute("""Select * from things where id=?""", (1,)).fetchall()
         old_name = product[0]['thing']
         url = '/modify?id=1&quantity=20&name=' + old_name
@@ -179,7 +179,7 @@ class TestRoutes():
     
     def test_add_ok(self):
         client = self.create_client()
-        conn = get_db_connection()
+        conn = get_db_connection(True)
         product = conn.execute("""Select count(*)=1 as exist from things where thing=?""", ("Test",)).fetchall()
         exist = product[0]['exist']
         assert not exist
@@ -192,7 +192,7 @@ class TestRoutes():
 
     def test_add_if_conflict(self):
         client = self.create_client()
-        conn = get_db_connection()
+        conn = get_db_connection(True)
         product = conn.execute("""Select * from things where id=?""", (1,)).fetchall()
         old_name = product[0]['thing']
         url = '/add?quantity=20&name=' + old_name

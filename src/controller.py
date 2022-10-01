@@ -3,12 +3,12 @@ from http.client import CONFLICT, METHOD_NOT_ALLOWED, NOT_FOUND, OK, SERVICE_UNA
 from flask import render_template, jsonify, Response, request
 
 
-def configure_routes(app):
+def configure_routes(app, test=False):
 
     @app.route('/addOne', methods=['POST'])
     def add_one():
         product_id = request.args.get('id')
-        conn = get_db_connection()
+        conn = get_db_connection(test)
         res = conn.execute("""Update things set quantity=quantity+1 where id=?""", (product_id,))
         conn.commit()
         conn.close()
@@ -21,7 +21,7 @@ def configure_routes(app):
     @app.route('/removeOne', methods=['POST'])
     def remove_one():
         product_id = request.args.get('id')
-        conn = get_db_connection()
+        conn = get_db_connection(test)
         product_not_exist = conn.execute("""Select count(*)=0 as nb from things where id=?""", (product_id,)).fetchall()
         product_not_exist = product_not_exist[0]['nb']
         if (product_not_exist):
@@ -42,7 +42,7 @@ def configure_routes(app):
     @app.route('/deleteAll', methods=['POST'])
     def delete_all():
         product_id = request.args.get('id')
-        conn = get_db_connection()
+        conn = get_db_connection(test)
         res = conn.execute("""Delete from things where id=?""", (product_id,))
         conn.commit()
         conn.close()
@@ -57,7 +57,7 @@ def configure_routes(app):
         product_id = request.args.get('id')
         product_quatity = request.args.get('quantity')
         product_name = request.args.get('name')
-        conn = get_db_connection()
+        conn = get_db_connection(test)
         name_already_exist = conn.execute("""Select count(*) as nb from things where thing=?""", (product_name,)).fetchall()
         name_already_exist = name_already_exist[0]['nb']
         if (name_already_exist > 0):
@@ -77,7 +77,7 @@ def configure_routes(app):
     def add():
         product_quatity = request.args.get('quantity')
         product_name = request.args.get('name')
-        conn = get_db_connection()
+        conn = get_db_connection(test)
         name_already_exist = conn.execute("""Select count(*) as nb from things where thing=?""", (product_name,)).fetchall()
         name_already_exist = name_already_exist[0]['nb']
         if (name_already_exist > 0):
@@ -96,7 +96,7 @@ def configure_routes(app):
 
     @app.route('/getAll')
     def get_all():
-        conn = get_db_connection()
+        conn = get_db_connection(test)
         things = conn.execute('SELECT * FROM things').fetchall()
         things = [tuple(row) for row in things]
         conn.close()

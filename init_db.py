@@ -1,9 +1,12 @@
 import sqlite3
+import sys
 
 
-def reset_db():
-    connection = sqlite3.connect('database.db')
-
+def reset_db(test=False):
+    if test:
+        connection = sqlite3.connect('databasetest.db')
+    else:
+        connection = sqlite3.connect('database.db')
 
     with open('schema.sql') as f:
         connection.executescript(f.read())
@@ -19,4 +22,9 @@ def reset_db():
                 )
 
     connection.commit()
-    connection.close()
+    connection.close()  
+
+
+if __name__ == "__main__":
+    args = sys.argv
+    globals()[args[1]](*args[2:])

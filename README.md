@@ -14,7 +14,7 @@ pip install pytest
 To start the project, run this command :
 
 ```
-python3 init_db.py
+python3 init_db.py reset_db
 python3 __init__.py
 ```
 

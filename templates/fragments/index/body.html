@@ -2,24 +2,24 @@
     <q-list bordered separator v-for="el in productList" class="shadow-9 q-ma-md">
         <q-item>
             <q-item-section>
-                <q-item-label class="text-h6">{ el[2] }</q-item-label>
-                <q-item-label class="text-subtitle1">{ el[1] }</q-item-label>
+                <q-item-label class="text-h6">{ el['name'] }</q-item-label>
+                <q-item-label class="text-subtitle1">{ el['quantity'] }</q-item-label>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="green" icon="add_circle" @click="addOne(el[0])"></q-btn>
+                <q-btn round color="green" icon="add_circle" @click="addOne(el['id'])"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="orange" icon="remove_circle" @click="removeOne(el[0])"></q-btn>
+                <q-btn round color="orange" icon="remove_circle" @click="removeOne(el['id'])"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="red" icon="delete" @click="deleteAll(el[0])"></q-btn>
+                <q-btn round color="red" icon="delete" @click="deleteAll(el['id'])"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="primary" icon="edit" @click="alert=true;current_product_id=el[0]"></q-btn>
+                <q-btn round color="primary" icon="edit" @click="alert=true;current_product_id=el['id']"></q-btn>
             </q-item-section>
         </q-item>
     </q-list>

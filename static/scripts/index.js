@@ -122,7 +122,7 @@ const { useQuasar } = Quasar
         }
         else {
           const res = this.productListClone.filter(ele => 
-            ele[2].toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
+            ele['name'].toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
           );
           this.productList = res;
         }

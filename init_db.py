@@ -13,11 +13,11 @@ def reset_db(test=False):
 
     cur = connection.cursor()
 
-    cur.execute("INSERT INTO things (quantity, thing) VALUES (?, ?)",
+    cur.execute("INSERT INTO Products (quantity, name) VALUES (?, ?)",
                 (3, 'Tomates')
                 )
 
-    cur.execute("INSERT INTO things (quantity, thing) VALUES (?, ?)",
+    cur.execute("INSERT INTO Products (quantity, name) VALUES (?, ?)",
                 (30, 'Feuilles')
                 )
 

@@ -17,7 +17,6 @@ class Dao:
     def getProductByName(self, product_name):
         conn = get_db_connection()
         cur = conn.cursor()
-        print('name', product_name)
         res = cur.execute("""Select * from Products where name=?""", (product_name,))
         p = res.fetchone()
         conn.close()

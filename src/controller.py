@@ -43,9 +43,7 @@ def configure_routes(app, test=False):
         product_id = request.args.get('id')
         product_quantity = request.args.get('quantity')
         product_name = request.args.get('name')
-        print(product_id, product_quantity, product_name)
         product = Product(product_id, product_quantity, product_name)
-        print(product)
         try:
             dao.modifyProduct(product)
             return Response(status=OK)

@@ -7,7 +7,7 @@ from src.model.product import Product
 
 
 def configure_routes(app, test=False):
-    dao = Dao()
+    dao = Dao(test=test)
 
     @app.route('/addOne', methods=['POST'])
     def add_one():

@@ -11,19 +11,6 @@ def reset_db(test=False):
     with open('schema.sql') as f:
         connection.executescript(f.read())
 
-    cur = connection.cursor()
-
-    cur.execute("INSERT INTO Products (quantity, name) VALUES (?, ?)",
-                (3, 'Tomates')
-                )
-
-    cur.execute("INSERT INTO Products (quantity, name) VALUES (?, ?)",
-                (30, 'Feuilles')
-                )
-
-    connection.commit()
-    connection.close()  
-
 
 if __name__ == "__main__":
     args = sys.argv

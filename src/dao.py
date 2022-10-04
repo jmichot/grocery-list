@@ -8,6 +8,8 @@ class Dao:
         self.test = test
 
     def getProductById(self, product_id):
+        if type(product_id) is not int:
+            raise ValueError('Quantity is not int')
         conn = get_db_connection(test=self.test)
         cur = conn.cursor()
         res = cur.execute("""Select * from Products where id=?""", (product_id,))
@@ -28,6 +30,8 @@ class Dao:
         return Product(p[0], p[1], p[2])
 
     def addOneQuantity(self, product_id):
+        if type(product_id) is not int:
+            raise ValueError('Quantity is not int')
         product = self.getProductById(product_id)
         if product is None:
             raise Exception('The product does not exist')
@@ -37,6 +41,8 @@ class Dao:
         conn.close()
 
     def removeOneQuantity(self, product_id):
+        if type(product_id) is not int:
+            raise ValueError('Quantity is not int')
         product = self.getProductById(product_id)
         if product is None:
             raise Exception('The product does not exist')
@@ -49,6 +55,14 @@ class Dao:
             conn.close()
 
     def addProduct(self, product: Product):
+        if product.id is not None:
+            raise ValueError('Id should be None')
+        if product.name is None or product.quantity is None:
+            raise ValueError('Name or quantity is None')
+        if type(product.name) is not str:
+            raise ValueError('Name is not string')
+        if type(product.quantity) is not int:
+            raise ValueError('Quantity is not int')
         already_exist = self.getProductByName(product.name)
         if already_exist is not None:
             raise Exception('This name is already used by another product')
@@ -58,6 +72,8 @@ class Dao:
         conn.close()
 
     def deleteProductById(self, product_id):
+        if type(product_id) is not int:
+            raise ValueError('Quantity is not int')
         product = self.getProductById(product_id)
         if product is None:
             raise Exception('The product does not exist')
@@ -67,6 +83,14 @@ class Dao:
         conn.close()
 
     def modifyProduct(self, product: Product):
+        if product.name is None or product.quantity is None:
+            raise ValueError('Name or quantity is None')
+        if type(product.name) is not str:
+            raise ValueError('Name is not string')
+        if type(product.quantity) is not int:
+            raise ValueError('Quantity is not int')
+        if type(product.id) is not int:
+            raise ValueError('Id is not int')
         already_exist = self.getProductByName(product.name)
         if already_exist is not None:
             raise Exception('This name is already used by another product')

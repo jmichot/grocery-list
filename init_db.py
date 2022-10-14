@@ -1,7 +1,6 @@
 import sqlite3
 import sys
 
-
 def reset_db(test=False):
     if test:
         connection = sqlite3.connect('databasetest.db')

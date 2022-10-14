@@ -1,4 +1,4 @@
-import init_db
+import init_db as init_db
 from src.connexion import get_db_connection
 from src.dao import Dao
 from src.model.product import Product

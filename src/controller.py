@@ -72,7 +72,8 @@ def configure_routes(app, test=False):
     @app.route('/getAll')
     def get_all():
         products = dao.getAll()
-        return jsonify(products)
+        serialize = [p.serialize() for p in products]
+        return jsonify(serialize)
 
     @app.route('/')
     def index():

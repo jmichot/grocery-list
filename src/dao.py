@@ -22,6 +22,11 @@ class Dao:
         if product_id is None or type(product_id) is not int:
             raise IdException('Id should be an integer')
 
+    def check_product_id_set_to_none(self, product_id):
+        if product_id is not None:
+            raise IdException('Id should be none when adding a product')
+
+
     # Check name method for potential errors
     def check_product_name(self, product_name):
         if product_name is None or type(product_name) is not str:
@@ -86,6 +91,7 @@ class Dao:
 
     # Insert method
     def addProduct(self, product: Product):
+        self.check_product_id_set_to_none(product.id)
         self.check_product_name(product.name)
         self.check_quantity(product.quantity)
         self.check_name_already_exist(product.name)

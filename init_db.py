@@ -8,7 +8,7 @@ def reset_db(test=False):
     else:
         connection = sqlite3.connect('database.db')
 
-    with open('D:\MesDocuments\Documents\COURS\MASTER\grocery-list\schema.sql') as f:
+    with open('schema.sql') as f:
         connection.executescript(f.read())
 
 

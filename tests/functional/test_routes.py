@@ -1,6 +1,6 @@
 from flask import Flask
-import init_db
 
+import init_db
 from src import controller
 from app import app
 from src.dao import Dao

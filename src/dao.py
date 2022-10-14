@@ -1,10 +1,8 @@
 from src.connexion import get_db_connection
+from src.exceptions.IdException import IdException
+from src.exceptions.NameException import NameException
+from src.exceptions.QuantityException import QuantityException
 from src.model.product import Product
-
-from exceptions.IdException import IdException
-from exceptions.NameException import NameException
-from exceptions.QuantityException import QuantityException
-from exceptions.ProductException import ProductException
 
 
 class Dao:
@@ -30,14 +28,16 @@ class Dao:
             raise NameException('Name should be a string')
 
     def check_name_already_exist(self, product_name):
-        self.checkProductName(product_name)
+        print(product_name)
+        self.check_product_name(product_name)
         product = self.getProductByName(product_name)
+        print(product)
         if product is not None:
             raise NameException('This name is already used by another product')
 
     # Get method
     def get_product_by_id(self, product_id):
-        self.checkProductID(product_id)
+        self.check_product_id(product_id)
 
         conn = get_db_connection(test=self.test)
         cur = conn.cursor()
@@ -49,7 +49,7 @@ class Dao:
         return Product(p[0], p[1], p[2])
 
     def getProductByName(self, product_name):
-        self.checkProductName(product_name)
+        self.check_product_name(product_name)
 
         conn = get_db_connection(test=self.test)
         cur = conn.cursor()
@@ -70,12 +70,13 @@ class Dao:
     # Update method
     def updateProduct(self, product_id, product_name, product_quantity):
         # Check method
-        self.checkQuantity(product_id)
-        self.checkProductName(product_name)
-        self.checkProductExist(self.getProductById(product_id))
+        self.check_quantity(product_id)
+        self.check_product_name(product_name)
+        self.check_name_already_exist(product_id)
+
         product = self.getProductByName(product_name)
         if product is not None and product.id != product_id:
-            raise NameException('This name is already used by another product')
+            raise ValueError('This name is already used by another product')
 
         conn = get_db_connection(test=self.test)
         conn.execute("""Update Products set quantity=? name=? where id=?""",
@@ -85,9 +86,9 @@ class Dao:
 
     # Insert method
     def addProduct(self, product: Product):
-        self.checkProductName(product.name)
-        self.checkProductQuantity(product.quantity)
-        self.checkNameAlreadyExist(self.getProductByName(product.name))
+        self.check_product_name(product.name)
+        self.check_quantity(product.quantity)
+        self.check_name_already_exist(product.name)
 
         conn = get_db_connection(test=self.test)
         conn.execute("""Insert into Products (name, quantity) values (?, ?)""", (product.name, product.quantity))
@@ -96,8 +97,8 @@ class Dao:
 
     # Delete method
     def deleteProductById(self, product_id):
-        self.checkProductID(product_id)
-        product = self.getProductById(product_id)
+        self.check_product_id(product_id)
+        product = self.get_product_by_id(product_id)
         if product is None:
             raise Exception("Product not found")  # CUSTOM EXCEPTION
 

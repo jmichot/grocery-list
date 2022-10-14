@@ -1,0 +1,155 @@
+<html><body><h1>src\dao.py</h1>Killed 36 out of 50 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 101</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -4,7 +4,7 @@
+ 
+ class Dao:
+ 
+-    def __init__(self, test=False):
++    def __init__(self, test=True):
+         self.test = test
+ 
+     def getProductById(self, product_id):
+</pre><h3>Mutant 108</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -15,7 +15,7 @@
+         conn.close()
+         if p is None:
+             return None
+-        return Product(p[0], p[1], p[2])
++        return Product(p[1], p[1], p[2])
+ 
+     def getProductByName(self, product_name):
+         conn = get_db_connection(test=self.test)
+</pre><h3>Mutant 114</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -21,7 +21,7 @@
+         conn = get_db_connection(test=self.test)
+         cur = conn.cursor()
+         res = cur.execute("""Select * from Products where name=?""", (product_name,))
+-        p = res.fetchone()
++        p = None
+         conn.close()
+         if p is None:
+             return None
+</pre><h3>Mutant 116</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -25,7 +25,7 @@
+         conn.close()
+         if p is None:
+             return None
+-        return Product(p[0], p[1], p[2])
++        return Product(p[1], p[1], p[2])
+ 
+     def addOneQuantity(self, product_id):
+         product = self.getProductById(product_id)
+</pre><h3>Mutant 117</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -25,7 +25,7 @@
+         conn.close()
+         if p is None:
+             return None
+-        return Product(p[0], p[1], p[2])
++        return Product(p[0], p[2], p[2])
+ 
+     def addOneQuantity(self, product_id):
+         product = self.getProductById(product_id)
+</pre><h3>Mutant 118</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -25,7 +25,7 @@
+         conn.close()
+         if p is None:
+             return None
+-        return Product(p[0], p[1], p[2])
++        return Product(p[0], p[1], p[3])
+ 
+     def addOneQuantity(self, product_id):
+         product = self.getProductById(product_id)
+</pre><h3>Mutant 121</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -30,7 +30,7 @@
+     def addOneQuantity(self, product_id):
+         product = self.getProductById(product_id)
+         if product is None:
+-            raise Exception('The product does not exist')
++            raise Exception('XXThe product does not existXX')
+         conn = get_db_connection(test=self.test)
+         conn.execute("""Update Products set quantity=quantity+1 where id=?""", (product_id,))
+         conn.commit()
+</pre><h3>Mutant 125</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -39,7 +39,7 @@
+     def removeOneQuantity(self, product_id):
+         product = self.getProductById(product_id)
+         if product is None:
+-            raise Exception('The product does not exist')
++            raise Exception('XXThe product does not existXX')
+         if product.quantity <= 1:
+             self.deleteProductById(product_id)
+         else:
+</pre><h3>Mutant 129</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -49,7 +49,7 @@
+             conn.close()
+ 
+     def addProduct(self, product: Product):
+-        already_exist = self.getProductByName(product.name)
++        already_exist = None
+         if already_exist is not None:
+             raise Exception('This name is already used by another product')
+         conn = get_db_connection(test=self.test)
+</pre><h3>Mutant 131</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -51,7 +51,7 @@
+     def addProduct(self, product: Product):
+         already_exist = self.getProductByName(product.name)
+         if already_exist is not None:
+-            raise Exception('This name is already used by another product')
++            raise Exception('XXThis name is already used by another productXX')
+         conn = get_db_connection(test=self.test)
+         conn.execute("""Insert into Products (name, quantity) values (?, ?)""", (product.name, product.quantity))
+         conn.commit()
+</pre><h3>Mutant 135</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -60,7 +60,7 @@
+     def deleteProductById(self, product_id):
+         product = self.getProductById(product_id)
+         if product is None:
+-            raise Exception('The product does not exist')
++            raise Exception('XXThe product does not existXX')
+         conn = get_db_connection(test=self.test)
+         conn.execute("""Delete from Products where id=?""", (product_id,))
+         conn.commit()
+</pre><h3>Mutant 137</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -67,7 +67,7 @@
+         conn.close()
+ 
+     def modifyProduct(self, product: Product):
+-        already_exist = self.getProductByName(product.name)
++        already_exist = None
+         if already_exist is not None:
+             raise Exception('This name is already used by another product')
+         old_product = self.getProductById(product.id)
+</pre><h3>Mutant 139</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -69,7 +69,7 @@
+     def modifyProduct(self, product: Product):
+         already_exist = self.getProductByName(product.name)
+         if already_exist is not None:
+-            raise Exception('This name is already used by another product')
++            raise Exception('XXThis name is already used by another productXX')
+         old_product = self.getProductById(product.id)
+         if old_product is None:
+             raise Exception('The product does not exist')
+</pre><h3>Mutant 142</h3><pre>--- src\dao.py
++++ src\dao.py
+@@ -72,7 +72,7 @@
+             raise Exception('This name is already used by another product')
+         old_product = self.getProductById(product.id)
+         if old_product is None:
+-            raise Exception('The product does not exist')
++            raise Exception('XXThe product does not existXX')
+         print(product.name, product.quantity, product.id)
+         conn = get_db_connection(test=self.test)
+         conn.execute("""Update Products set name=?, quantity=? where id=?""",
+</pre></body></html>

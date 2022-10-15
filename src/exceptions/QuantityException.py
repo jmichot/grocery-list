@@ -1,0 +1,2 @@
+class QuantityException(Exception):
+    pass

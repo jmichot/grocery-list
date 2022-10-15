@@ -1,8 +1,11 @@
-import init_db
+import init_db as init_db
 from src.connexion import get_db_connection
 from src.dao import Dao
 from src.model.product import Product
 import pytest
+from src.exceptions.IdException import IdException
+from src.exceptions.NameException import NameException
+from src.exceptions.QuantityException import QuantityException
 
 
 class TestDao():
@@ -31,7 +34,7 @@ class TestDao():
     def test_insert_success(self):
         dao = self.init_dao()
         product = Product(None, self.test_quantity, self.test_name)
-        dao.addProduct(product)
+        dao.add_product(product)
 
         rows = self.get_rows()
         assert rows[0]['id'] == 1
@@ -41,8 +44,8 @@ class TestDao():
     def test_insert_failed_str(self):
         dao = self.init_dao()
         product = Product(None, "not a int", self.test_name)
-        with pytest.raises(ValueError):
-            dao.addProduct(product)
+        with pytest.raises(QuantityException):
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -50,8 +53,8 @@ class TestDao():
     def test_insert_failed_quantity_none(self):
         dao = self.init_dao()
         product = Product(None, None, self.test_name)
-        with pytest.raises(ValueError):
-            dao.addProduct(product)
+        with pytest.raises(QuantityException):
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -59,8 +62,8 @@ class TestDao():
     def test_insert_failed_name_none(self):
         dao = self.init_dao()
         product = Product(None, self.test_quantity, None)
-        with pytest.raises(ValueError):
-            dao.addProduct(product)
+        with pytest.raises(NameException):
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -68,8 +71,8 @@ class TestDao():
     def test_insert_failed_id_not_none(self):
         dao = self.init_dao()
         product = Product(21, self.test_quantity, self.test_name)
-        with pytest.raises(ValueError):
-            dao.addProduct(product)
+        with pytest.raises(IdException):
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -77,7 +80,7 @@ class TestDao():
     def test_get_product_by_id_success(self):
         dao = self.init_dao()
         self.add_test_product()
-        product = dao.getProductById(self.test_id)
+        product = dao.get_product_by_id(self.test_id)
         assert product.id == self.test_id
         assert product.quantity == self.test_quantity
         assert product.name == self.test_name
@@ -85,23 +88,17 @@ class TestDao():
     def test_get_product_by_id_failed_wrong_id(self):
         dao = self.init_dao()
         self.add_test_product()
-        product = dao.getProductById(2)
+        product = dao.get_product_by_id(2)
         assert product is None
 
     def test_get_product_by_id_failed_none_id(self):
         dao = self.init_dao()
         self.add_test_product()
-        with pytest.raises(ValueError):
-            dao.getProductById(None)
+        with pytest.raises(IdException):
+            dao.get_product_by_id(None)
 
     def test_get_product_by_id_failed_str_id(self):
         dao = self.init_dao()
         self.add_test_product()
-        with pytest.raises(ValueError):
-            dao.getProductById("not id")
-
-    def test_get_product_by_name_success(self):
-        dao = self.init_dao()
-        self.add_test_product()
-        with pytest.raises(ValueError):
-            dao.getProductById("not id")
+        with pytest.raises(IdException):
+            dao.get_product_by_id("not id")

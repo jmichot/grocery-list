@@ -37,8 +37,8 @@ const { useQuasar } = Quasar
 
     methods: {
 
-      getAll() {
-        axios.get("/getAll")
+      get_all_product() {
+        axios.get("/product")
         .then(response => {
           this.productListClone = response.data;
           this.productList = response.data;
@@ -49,32 +49,24 @@ const { useQuasar } = Quasar
         })
       },
 
-      addOne(id) {
-        axios.post("/addOne?id=" + id)
+      add_product() {
+        const product = {'name':this.new_name, 'quantity':this.new_quantity}
+        axios.post("/product", product)
         .then(response => {
-          this.getAll();
+          this.get_all_product();
+          this.notify('primary', 'Product successfully added');
         })
         .catch(error => {
           console.log(error);
           this.notify('red', 'An error has occurred', error);
         })
+        .finally(() => this.addProductModal=false);
       },
 
-      removeOne(id) {
-        axios.post("/removeOne?id=" + id)
+      delete_product(id) {
+        axios.delete("/product/" + id)
         .then(response => {
-          this.getAll();
-        })
-        .catch(error => {
-          console.log(error);
-          this.notify('red', 'An error has occurred', error);
-        })
-      },
-
-      deleteAll(id) {
-        axios.post("/deleteAll?id=" + id)
-        .then(response => {
-          this.getAll();
+          this.get_all_product();
           this.notify('primary', 'Product successfully deleted');
         })
         .catch(error => {
@@ -83,10 +75,11 @@ const { useQuasar } = Quasar
         })
       },
 
-      modify() {
-        axios.post("/modify?id=" + this.current_product_id + "&quantity=" + this.new_quantity + "&name=" + this.new_name)
+      modify_product(id) {
+        const product = {'name':this.new_name, 'quantity':this.new_quantity}
+        axios.put("/product/" + id, product)
         .then(response => {
-          this.getAll();
+          this.get_all_product();
           this.notify('primary', 'Successfully modified product');
         })
         .catch(error => {
@@ -96,23 +89,29 @@ const { useQuasar } = Quasar
         this.alert=false;
       },
 
-      addProduct() {
-        axios.post("/add?quantity=" + this.new_quantity + "&name=" + this.new_name)
+       modify_product_quantity(el, quantity) {
+        console.log(el)
+        const product = {'name':el.name, 'quantity':el.quantity + quantity}
+
+         if (product.quantity <= 0)
+          return this.delete_product(el.id)
+
+        axios.put("/product/" + el.id, product)
         .then(response => {
-          this.getAll();
-          this.notify('primary', 'Product successfully added');
+          this.get_all_product();
+          this.notify('primary', 'Successfully modified product');
         })
         .catch(error => {
           console.log(error);
           this.notify('red', 'An error has occurred', error);
         })
-        this.addProductModal=false;
-      }
+        this.alert=false;
+      },
 
     },
 
     async created() {
-      await this.getAll();
+      await this.get_all_product();
     },
 
     watch: {

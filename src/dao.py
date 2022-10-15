@@ -1,5 +1,35 @@
 from src.connexion import get_db_connection
+from src.exceptions.IdException import IdException
+from src.exceptions.NameException import NameException
+from src.exceptions.ProductException import ProductException
+from src.exceptions.QuantityException import QuantityException
+from src.exceptions.conflictException import ConflictException
 from src.model.product import Product
+
+
+# Check quantity method for potential errors
+def check_quantity(product_quantity):
+    if product_quantity is None or type(product_quantity) is not int:
+        raise QuantityException('Quantity should be an integer')
+    if product_quantity <= 0:
+        raise QuantityException('Quantity is lower than 0')
+
+
+# Check ID method for potential errors
+def check_product_id(product_id):
+    if product_id is None or type(product_id) is not int:
+        raise IdException('Id should be an integer')
+
+
+def check_product_id_set_to_none(product_id):
+    if product_id is not None:
+        raise IdException('Id should be none when adding a product')
+
+
+# Check name method for potential errors
+def check_product_name(product_name):
+    if product_name is None or type(product_name) is not str:
+        raise NameException('Name should be a string')
 
 
 class Dao:
@@ -7,9 +37,16 @@ class Dao:
     def __init__(self, test=False):
         self.test = test
 
-    def getProductById(self, product_id):
-        if type(product_id) is not int:
-            raise ValueError('Quantity is not int')
+    def check_name_already_exist(self, product_name):
+        check_product_name(product_name)
+        product = self.get_product_by_name(product_name)
+        if product is not None:
+            raise ConflictException('This name is already used by another product')
+
+    # Get method
+    def get_product_by_id(self, product_id):
+        check_product_id(product_id)
+
         conn = get_db_connection(test=self.test)
         cur = conn.cursor()
         res = cur.execute("""Select * from Products where id=?""", (product_id,))
@@ -19,7 +56,9 @@ class Dao:
             return None
         return Product(p[0], p[1], p[2])
 
-    def getProductByName(self, product_name):
+    def get_product_by_name(self, product_name):
+        check_product_name(product_name)
+
         conn = get_db_connection(test=self.test)
         cur = conn.cursor()
         res = cur.execute("""Select * from Products where name=?""", (product_name,))
@@ -29,84 +68,53 @@ class Dao:
             return None
         return Product(p[0], p[1], p[2])
 
-    def addOneQuantity(self, product_id):
-        if type(product_id) is not int:
-            raise ValueError('Quantity is not int')
-        product = self.getProductById(product_id)
-        if product is None:
-            raise Exception('The product does not exist')
+    def get_all_product(self):
         conn = get_db_connection(test=self.test)
-        conn.execute("""Update Products set quantity=quantity+1 where id=?""", (product_id,))
+        cur = conn.cursor()
+        products = cur.execute('SELECT * FROM Products').fetchall()
+        conn.close()
+        return [Product(row[0], row[1], row[2]) for row in products]
+
+    # Update method
+    def update_product(self, product_id, product_name, product_quantity):
+        # Check method
+        check_product_id(product_id)
+        check_quantity(product_quantity)
+        check_product_name(product_name)
+
+        if self.get_product_by_id(product_id) is None:
+            raise ProductException('This product does not exist')
+
+        product = self.get_product_by_name(product_name)
+        if product is not None and product.id != product_id:
+            raise ConflictException('This name is already used by another product')
+
+        conn = get_db_connection(test=self.test)
+        conn.execute("""Update Products set name=?, quantity=? where id=?""",
+                     (product_name, product_quantity, product_id,))
         conn.commit()
         conn.close()
 
-    def removeOneQuantity(self, product_id):
-        if type(product_id) is not int:
-            raise ValueError('Quantity is not int')
-        product = self.getProductById(product_id)
-        if product is None:
-            raise Exception('The product does not exist')
-        if product.quantity <= 1:
-            self.deleteProductById(product_id)
-        else:
-            conn = get_db_connection(test=self.test)
-            conn.execute("""Update Products set quantity=quantity-1 where id=?""", (product_id,))
-            conn.commit()
-            conn.close()
+    # Insert method
+    def add_product(self, product: Product):
+        check_product_id_set_to_none(product.id)
+        check_product_name(product.name)
+        check_quantity(product.quantity)
+        self.check_name_already_exist(product.name)
 
-    def addProduct(self, product: Product):
-        if product.id is not None:
-            raise ValueError('Id should be None')
-        if product.name is None or product.quantity is None:
-            raise ValueError('Name or quantity is None')
-        if type(product.name) is not str:
-            raise ValueError('Name is not string')
-        if type(product.quantity) is not int:
-            raise ValueError('Quantity is not int')
-        already_exist = self.getProductByName(product.name)
-        if already_exist is not None:
-            raise Exception('This name is already used by another product')
         conn = get_db_connection(test=self.test)
         conn.execute("""Insert into Products (name, quantity) values (?, ?)""", (product.name, product.quantity))
         conn.commit()
         conn.close()
 
-    def deleteProductById(self, product_id):
-        if type(product_id) is not int:
-            raise ValueError('Quantity is not int')
-        product = self.getProductById(product_id)
+    # Delete method
+    def delete_product_by_id(self, product_id):
+        check_product_id(product_id)
+        product = self.get_product_by_id(product_id)
         if product is None:
-            raise Exception('The product does not exist')
+            raise ProductException('Product does not exist')  # CUSTOM EXCEPTION
+
         conn = get_db_connection(test=self.test)
         conn.execute("""Delete from Products where id=?""", (product_id,))
         conn.commit()
         conn.close()
-
-    def modifyProduct(self, product: Product):
-        if product.name is None or product.quantity is None:
-            raise ValueError('Name or quantity is None')
-        if type(product.name) is not str:
-            raise ValueError('Name is not string')
-        if type(product.quantity) is not int:
-            raise ValueError('Quantity is not int')
-        if type(product.id) is not int:
-            raise ValueError('Id is not int')
-        already_exist = self.getProductByName(product.name)
-        if already_exist is not None:
-            raise Exception('This name is already used by another product')
-        old_product = self.getProductById(product.id)
-        if old_product is None:
-            raise Exception('The product does not exist')
-        print(product.name, product.quantity, product.id)
-        conn = get_db_connection(test=self.test)
-        conn.execute("""Update Products set name=?, quantity=? where id=?""",
-                          (product.name, product.quantity, product.id))
-        conn.commit()
-        conn.close()
-
-    def getAll(self):
-        conn = get_db_connection(test=self.test)
-        cur = conn.cursor()
-        products = cur.execute('SELECT * FROM Products').fetchall()
-        conn.close()
-        return [Product(row[0], row[1], row[2]).serialize() for row in products]

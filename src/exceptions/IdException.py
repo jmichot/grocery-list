@@ -1,0 +1,2 @@
+class IdException(Exception):
+    pass

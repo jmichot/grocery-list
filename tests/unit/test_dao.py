@@ -1,6 +1,6 @@
 import init_db as init_db
 from src.connexion import get_db_connection
-from src.dao import Dao
+from src.dao import Dao, check_product_name
 from src.model.product import Product
 import pytest
 from src.exceptions.IdException import IdException
@@ -102,3 +102,14 @@ class TestDao:
         self.add_test_product()
         with pytest.raises(IdException):
             dao.get_product_by_id("not id")
+
+    def test_check_product_name_failed_none(self):
+        with pytest.raises(NameException):
+            check_product_name(None)
+
+    def test_check_product_name_failed_int_type(self):
+        with pytest.raises(NameException):
+            check_product_name(1)
+
+
+

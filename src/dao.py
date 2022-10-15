@@ -1,7 +1,9 @@
 from src.connexion import get_db_connection
 from src.exceptions.IdException import IdException
 from src.exceptions.NameException import NameException
+from src.exceptions.ProductException import ProductException
 from src.exceptions.QuantityException import QuantityException
+from src.exceptions.conflictException import ConflictException
 from src.model.product import Product
 
 
@@ -9,7 +11,7 @@ from src.model.product import Product
 def check_quantity(product_quantity):
     if product_quantity is None or type(product_quantity) is not int:
         raise QuantityException('Quantity should be an integer')
-    if product_quantity < 0:
+    if product_quantity <= 0:
         raise QuantityException('Quantity is lower than 0')
 
 
@@ -39,7 +41,7 @@ class Dao:
         check_product_name(product_name)
         product = self.get_product_by_name(product_name)
         if product is not None:
-            raise NameException('This name is already used by another product')
+            raise ConflictException('This name is already used by another product')
 
     # Get method
     def get_product_by_id(self, product_id):
@@ -76,13 +78,16 @@ class Dao:
     # Update method
     def update_product(self, product_id, product_name, product_quantity):
         # Check method
-        check_quantity(product_id)
+        check_product_id(product_id)
+        check_quantity(product_quantity)
         check_product_name(product_name)
-        self.check_name_already_exist(product_name)
+
+        if self.get_product_by_id(product_id) is None:
+            raise ProductException('This product does not exist')
 
         product = self.get_product_by_name(product_name)
         if product is not None and product.id != product_id:
-            raise ValueError('This name is already used by another product')
+            raise ConflictException('This name is already used by another product')
 
         conn = get_db_connection(test=self.test)
         conn.execute("""Update Products set name=?, quantity=? where id=?""",
@@ -91,10 +96,10 @@ class Dao:
         conn.close()
 
     # Insert method
-    def addProduct(self, product: Product):
+    def add_product(self, product: Product):
         check_product_id_set_to_none(product.id)
-        self.check_product_name(product.name)
-        self.check_quantity(product.quantity)
+        check_product_name(product.name)
+        check_quantity(product.quantity)
         self.check_name_already_exist(product.name)
 
         conn = get_db_connection(test=self.test)
@@ -107,7 +112,7 @@ class Dao:
         check_product_id(product_id)
         product = self.get_product_by_id(product_id)
         if product is None:
-            raise Exception("Product not found")  # CUSTOM EXCEPTION
+            raise ProductException('Product does not exist')  # CUSTOM EXCEPTION
 
         conn = get_db_connection(test=self.test)
         conn.execute("""Delete from Products where id=?""", (product_id,))

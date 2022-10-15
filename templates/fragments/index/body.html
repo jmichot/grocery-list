@@ -7,11 +7,11 @@
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="green" icon="add_circle" @click="modify_product(el['id'])"></q-btn>
+                <q-btn round color="green" icon="add_circle" @click="modify_product_quantity(el, 1)"></q-btn>
             </q-item-section>
 
             <q-item-section side>
-                <q-btn round color="orange" icon="remove_circle" @click="modify_product(el['id'])"></q-btn>
+                <q-btn round color="orange" icon="remove_circle" @click="modify_product_quantity(el, -1)"></q-btn>
             </q-item-section>
 
             <q-item-section side>
@@ -32,7 +32,7 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-                <q-form class="q-gutter-md" @submit="modify">
+                <q-form class="q-gutter-md" @submit="modify_product(current_product_id)">
                     <q-input filled v-model="new_name" label="Product name *" hint="New name of product" lazy-rules
                              :rules="[ val => val && val.length > 0 || 'Please type something']"></q-input>
 
@@ -46,8 +46,8 @@
                         <q-btn label="Submit" type="submit" color="primary"></q-btn>
                         <q-btn label="Close" color="primary" flat class="q-ml-sm" v-close-popup></q-btn>
                     </div>
+                </q-form>
             </q-card-section>
-            </q-form>
 
 
         </q-card>
@@ -75,7 +75,7 @@
                         <q-btn label="Submit" type="submit" color="primary"></q-btn>
                         <q-btn label="Close" color="primary" flat class="q-ml-sm" v-close-popup></q-btn>
                     </div>
-            </q-form>
+                </q-form>
             </q-card-section>
 
         </q-card>

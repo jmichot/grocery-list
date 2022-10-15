@@ -1,3 +1,6 @@
+import json
+
+import pytest
 from flask import Flask
 
 import init_db
@@ -8,7 +11,9 @@ from src.model.product import Product
 
 
 class TestRoutes:
-    def create_client(self):
+
+    @pytest.fixture(autouse=True)
+    def run_before_and_after_tests(self):
         init_db.reset_db(True)
         app = Flask(__name__, template_folder='../../templates')
         app.config.update({
@@ -17,230 +22,224 @@ class TestRoutes:
         controller.configure_routes(app, True)
         client = app.test_client()
         dao = Dao(test=True)
-        dao.addProduct(Product(None, 3, "TestName"))
-        return client
+        dao.add_product(Product(None, 3, "TestName"))
+        self.client = client
 
     # =====================================================#
 
     def test_base_route(self):
-        client = self.create_client()
         url = '/'
-        response = client.get(url)
-        client.delete()
+        response = self.client.get(url)
+        self.client.delete()
         assert response.status_code == 200
 
     # =====================================================#
 
-    def test_add_one_if_exist(self):
-        client = self.create_client()
-
-        get_all = client.get('/getAll')
+    def test_modify_quantity_success(self):
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        url = '/addOne?id=1'
-        response = client.post(url)
+        url = '/product/1'
+        dict = {'name': 'NewName', 'quantity': 8}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
         assert response.status_code == 200
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":4}]\n'
+        assert get_all.data == b'[{"id":1,"name":"NewName","quantity":8}]\n'
 
     # =====================================================#
 
-    def test_add_one_if_not_exist(self):
-        client = self.create_client()
+    def test_modify_failure_id_not_integer(self):
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        url = '/addOne?id=NotId'
-        response = client.post(url)
+        url = '/product/NotId'
+        dict = {'name': 'TestName', 'quantity': 8}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
         assert response.status_code == 400
 
-        url = '/addOne?id=123541'
-        response = client.post(url)
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+    def test_modify_failure_id_not_exist(self):
+
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+        url = '/product/125656'
+        dict = {'name': 'TestName', 'quantity': 8}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
         assert response.status_code == 404
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
     # =====================================================#
 
-    def test_remove_one_ok(self):
-        client = self.create_client()
+    def test_modify_failure_quantity(self):
 
-        get_all = client.get('/getAll')
+        url = '/product/1'
+        dict = {'name': 'TestName', 'quantity': 0}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
+        assert response.status_code == 400
+
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        url = '/removeOne?id=1'
-        response = client.post(url)
-        assert response.status_code == 200
+    def test_modify_failure_quantity_null(self):
+        url = '/product/1'
+        dict = {'name': 'TestName', 'quantity': -50}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
+        assert response.status_code == 400
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":2}]\n'
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        response = client.post(url)
-        assert response.status_code == 200
+    def test_modify_failure_quantity_null(self):
+        url = '/product/1'
+        dict = {'name': 'TestName'}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
+        assert response.status_code == 400
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":1}]\n'
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        response = client.post(url)
+    # =====================================================#
+
+    def test_delete_failure_id_not_integer(self):
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+        url = '/product/NotId'
+        response = self.client.delete(url)
+        assert response.status_code == 400
+
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+    def test_delete_failure_id_not_exist(self):
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+        url = '/product/125656'
+        response = self.client.delete(url)
+        assert response.status_code == 404
+
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+    # =====================================================#
+
+    def test_delete_success(self):
+
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+        url = '/product/1'
+        response = self.client.delete(url)
         assert response.status_code == 200
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[]\n'
 
     # =====================================================#
 
-    def test_remove_one_not_exist(self):
-        client = self.create_client()
-        get_all = client.get('/getAll')
+    def test_delete_failure_id_not_integer(self):
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        url = '/removeOne?id=NotId'
-        response = client.post(url)
+        url = '/product/NotId'
+        response = self.client.delete(url)
         assert response.status_code == 400
 
-        url = '/removeOne?id=132412412'
-        response = client.post(url)
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+    def test_delete_failure_id_not_exist(self):
+        get_all = self.client.get('/product')
+        assert get_all.status_code == 200
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
+
+        url = '/product/12415242'
+        response = self.client.delete(url)
         assert response.status_code == 404
 
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
-
-    # =====================================================#
-
-    def test_delete_all_ok(self):
-        client = self.create_client()
-
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
-
-        url = '/deleteAll?id=1'
-        response = client.post(url)
-        assert response.status_code == 200
-
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[]\n'
-
-    # =====================================================#
-
-    def test_delete_all_if_not_exist(self):
-        client = self.create_client()
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
-
-        url = '/deleteAll?id=NotId'
-        response = client.post(url)
-        assert response.status_code == 400
-
-        url = '/deleteAll?id=12415242'
-        response = client.post(url)
-        assert response.status_code == 404
-
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
-
-    # =====================================================#
-
-    def test_modify_ok(self):
-        client = self.create_client()
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
-
-        url = '/modify?id=1&quantity=20&name=Test'
-        response = client.post(url)
-        assert response.status_code == 200
-
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"Test","quantity":20}]\n'
-
-    def test_modify_if_not_exist(self):
-        client = self.create_client()
-
-        get_all = client.get('/getAll')
-        assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
-
-        url = '/modify?id=5&quantity=20&name=Test'
-        response = client.post(url)
-        assert response.status_code == 404
-
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
     # =====================================================#
 
     def test_modify_if_conflict(self):
-        client = self.create_client()
         dao = Dao(test=True)
-        dao.addProduct(Product(None, 3, "Test"))
-        get_all = client.get('/getAll')
+        dao.add_product(Product(None, 3, "Test"))
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3},{"id":2,"name":"Test","quantity":3}]\n'
 
-        url = '/modify?id=1&quantity=20&name=Test'
-        response = client.post(url)
-        assert response.status_code == 404
+        url = '/product/1'
+        dict = {'name': 'Test', 'quantity': 8}
+        response = self.client.put(url, data=json.dumps(dict), content_type='application/json')
+        assert response.status_code == 409
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3},{"id":2,"name":"Test","quantity":3}]\n'
 
     # =====================================================#
 
     def test_add_ok(self):
-        client = self.create_client()
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        url = '/add?quantity=20&name=MyNewProductTest'
-        response = client.post(url)
+        url = '/product'
+        dict = {'name': 'Test', 'quantity': 8}
+        response = self.client.post(url, data=json.dumps(dict), content_type='application/json')
         assert response.status_code == 200
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
-        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3},{"id":2,"name":"MyNewProductTest","quantity":20}]\n'
+        assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3},{"id":2,"name":"Test","quantity":8}]\n'
 
     # =====================================================#
 
     def test_add_if_conflict(self):
-        client = self.create_client()
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
-        url = '/add?quantity=20&name=TestName'
-        response = client.post(url)
+        url = '/product'
+        dict = {'name': 'TestName', 'quantity': 8}
+        response = self.client.post(url, data=json.dumps(dict), content_type='application/json')
         assert response.status_code == 409
 
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
     # =====================================================#
 
     def test_get_all(self):
-        client = self.create_client()
-        get_all = client.get('/getAll')
+        get_all = self.client.get('/product')
         assert get_all.status_code == 200
         assert get_all.data == b'[{"id":1,"name":"TestName","quantity":3}]\n'
 
@@ -248,15 +247,13 @@ class TestRoutes:
 
     def test_default_url(self):
         with app.app_context():
-            client = self.create_client()
-            response = client.get('/')
+            response = self.client.get('/')
             ### assert with render template index.html
 
     # =====================================================#
 
     def test_wrong_url(self):
-        client = self.create_client()
-        response = client.get('/bad/url')
+        response = self.client.get('/bad/url')
         assert response.status_code == 404
 
     # =====================================================#

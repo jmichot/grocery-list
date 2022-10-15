@@ -1,10 +1,12 @@
-import json
-
-from src.connexion import get_db_connection
-from http.client import CONFLICT, NOT_FOUND, OK, BAD_REQUEST
+from http.client import CONFLICT, NOT_FOUND, OK, BAD_REQUEST,INTERNAL_SERVER_ERROR
 from flask import render_template, jsonify, Response, request
 
 from src.dao import Dao
+from src.exceptions.IdException import IdException
+from src.exceptions.NameException import NameException
+from src.exceptions.ProductException import ProductException
+from src.exceptions.QuantityException import QuantityException
+from src.exceptions.conflictException import ConflictException
 from src.model.product import Product
 
 
@@ -18,61 +20,42 @@ def configure_routes(app, test=False):
             products = dao.get_all_product()
             serialize = [p.serialize() for p in products]
             return jsonify(serialize)
-        except ValueError as e:
-            return Response(status=BAD_REQUEST, response=str(e))
         except Exception as e:
-            return Response(status=NOT_FOUND, response=str(e))
-
-    @app.route('/product/<id>', methods=['GET'])
-    def get_one_product(id):
-        print('get one element : ' + id)
-        try:
-            product_id = int(id)
-            products = dao.get_product_by_id(product_id)
-            return jsonify(products.serialize())
-        except ValueError as e:
-            return Response(status=BAD_REQUEST, response=str(e))
-        except Exception as e:
-            return Response(status=NOT_FOUND, response=str(e))
+            return Response(status=INTERNAL_SERVER_ERROR, response=str(e))
 
     @app.route('/product/<id>', methods=['PUT'])
     def modify_product(id):
-        print('modify element : ' + id + ', ' + request.form.get('name') + ', ' + request.form.get('quantity'))
         try:
-            product_id = int(id)
-            product_name = request.form.get('name')
-            product_quantity = int(request.form.get('quantity'))
-            dao.update_product(product_id, product_name, product_quantity)
+            dao.update_product(int(id), request.json['name'], request.json['quantity'])
             return Response(status=OK)
-        except ValueError as e:
+        except (ValueError, KeyError, IdException, QuantityException, NameException) as e:
             return Response(status=BAD_REQUEST, response=str(e))
-        except Exception as e:
+        except ProductException as e:
             return Response(status=NOT_FOUND, response=str(e))
+        except ConflictException as e:
+            return Response(status=CONFLICT, response=str(e))
 
     @app.route('/product', methods=['POST'])
     def add_product():
-        print('add one element : ' + request.form.get('name') + ', ' + request.form.get('quantity'))
         try:
-            product_quantity = int(request.form.get('quantity'))
-            product_name = request.form.get('name')
-            product = Product(None, product_quantity, product_name)
+            product = Product(None, request.json['quantity'], request.json['name'])
             dao.add_product(product)
             return Response(status=OK)
-        except ValueError as e:
+        except (KeyError, IdException, QuantityException, NameException) as e:
             return Response(status=BAD_REQUEST, response=str(e))
-        except Exception as e:
+        except ProductException as e:
+            return Response(status=NOT_FOUND, response=str(e))
+        except ConflictException as e:
             return Response(status=CONFLICT, response=str(e))
 
     @app.route('/product/<id>', methods=['DELETE'])
     def delete_product(id):
-        print('delete one element : ' + id)
         try:
-            product_id = int(id)
-            dao.delete_product_by_id(product_id)
+            dao.delete_product_by_id(int(id))
             return Response(status=OK)
-        except ValueError as e:
+        except (ValueError, IdException) as e:
             return Response(status=BAD_REQUEST, response=str(e))
-        except Exception as e:
+        except ProductException as e:
             return Response(status=NOT_FOUND, response=str(e))
 
     @app.route('/')

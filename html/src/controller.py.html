@@ -1,12 +1,23 @@
-<html><body><h1>src\controller.py</h1>Killed 91 out of 92 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 9</h3><pre>--- src\controller.py
+<html><body><h1>src\controller.py</h1>Killed 23 out of 25 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 9</h3><pre>--- src\controller.py
 +++ src\controller.py
-@@ -3,7 +3,7 @@
- from flask import render_template, jsonify, Response, request
+@@ -10,7 +10,7 @@
+ from src.model.product import Product
  
  
 -def configure_routes(app, test=False):
 +def configure_routes(app, test=True):
+     dao = Dao(test=test)
  
-     @app.route('/addOne', methods=['POST'])
-     def add_one():
+     @app.route('/product', methods=['GET'])
+</pre><h3>Mutant 14</h3><pre>--- src\controller.py
++++ src\controller.py
+@@ -15,7 +15,7 @@
+ 
+     @app.route('/product', methods=['GET'])
+     def get_all():
+-        print('get all elements')
++        print('XXget all elementsXX')
+         try:
+             products = dao.get_all_product()
+             serialize = [p.serialize() for p in products]
 </pre></body></html>

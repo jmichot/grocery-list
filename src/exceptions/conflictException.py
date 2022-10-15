@@ -1,0 +1,2 @@
+class ConflictException(Exception):
+    pass

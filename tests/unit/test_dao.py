@@ -34,7 +34,7 @@ class TestDao():
     def test_insert_success(self):
         dao = self.init_dao()
         product = Product(None, self.test_quantity, self.test_name)
-        dao.addProduct(product)
+        dao.add_product(product)
 
         rows = self.get_rows()
         assert rows[0]['id'] == 1
@@ -45,7 +45,7 @@ class TestDao():
         dao = self.init_dao()
         product = Product(None, "not a int", self.test_name)
         with pytest.raises(QuantityException):
-            dao.addProduct(product)
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -54,7 +54,7 @@ class TestDao():
         dao = self.init_dao()
         product = Product(None, None, self.test_name)
         with pytest.raises(QuantityException):
-            dao.addProduct(product)
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -63,7 +63,7 @@ class TestDao():
         dao = self.init_dao()
         product = Product(None, self.test_quantity, None)
         with pytest.raises(NameException):
-            dao.addProduct(product)
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0
@@ -72,7 +72,7 @@ class TestDao():
         dao = self.init_dao()
         product = Product(21, self.test_quantity, self.test_name)
         with pytest.raises(IdException):
-            dao.addProduct(product)
+            dao.add_product(product)
 
         rows = self.get_rows()
         assert len(rows) == 0

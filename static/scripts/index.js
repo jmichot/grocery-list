@@ -49,33 +49,25 @@ const { useQuasar } = Quasar
         })
       },
 
-      get_one_product(id) {
-        axios.get("/product/" + id)
+      add_product() {
+        const product = {'name':this.new_name, 'quantity':this.new_quantity}
+        axios.post("/product", product)
         .then(response => {
           this.get_all_product();
+          this.notify('primary', 'Product successfully added');
         })
         .catch(error => {
           console.log(error);
           this.notify('red', 'An error has occurred', error);
         })
-      },
-
-      add_product(id) {
-        axios.post("/product/" + id)
-        .then(response => {
-          print(response)
-          this.get_all_product();
-        })
-        .catch(error => {
-          console.log(error);
-          this.notify('red', 'An error has occurred', error);
-        })
+        .finally(() => this.addProductModal=false);
       },
 
       delete_product(id) {
         axios.delete("/product/" + id)
         .then(response => {
           this.get_all_product();
+          this.notify('primary', 'Product successfully deleted');
         })
         .catch(error => {
           console.log(error);
@@ -84,10 +76,28 @@ const { useQuasar } = Quasar
       },
 
       modify_product(id) {
-        axios.put("/product/" + id)
+        const product = {'name':this.new_name, 'quantity':this.new_quantity}
+        axios.put("/product/" + id, product)
         .then(response => {
-          print(response)
-          System.out.print(response)
+          this.get_all_product();
+          this.notify('primary', 'Successfully modified product');
+        })
+        .catch(error => {
+          console.log(error);
+          this.notify('red', 'An error has occurred', error);
+        })
+        this.alert=false;
+      },
+
+       modify_product_quantity(el, quantity) {
+        console.log(el)
+        const product = {'name':el.name, 'quantity':el.quantity + quantity}
+
+         if (product.quantity <= 0)
+          return this.delete_product(el.id)
+
+        axios.put("/product/" + el.id, product)
+        .then(response => {
           this.get_all_product();
           this.notify('primary', 'Successfully modified product');
         })

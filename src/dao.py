@@ -5,31 +5,32 @@ from src.exceptions.ProductException import ProductException
 from src.exceptions.QuantityException import QuantityException
 from src.exceptions.conflictException import ConflictException
 from src.model.product import Product
+from src.constants import *
 
 
 # Check quantity method for potential errors
 def check_quantity(product_quantity):
     if product_quantity is None or type(product_quantity) is not int:
-        raise QuantityException('Quantity should be an integer')
+        raise QuantityException(QUANTITY_NOT_INT)
     if product_quantity <= 0:
-        raise QuantityException('Quantity is lower than 0')
+        raise QuantityException(QUANTITY_LOWER_THAN_ONE)
 
 
 # Check ID method for potential errors
 def check_product_id(product_id):
     if product_id is None or type(product_id) is not int:
-        raise IdException('Id should be an integer')
+        raise IdException(ID_NOT_INT)
 
 
 def check_product_id_set_to_none(product_id):
     if product_id is not None:
-        raise IdException('Id should be none when adding a product')
+        raise IdException(ID_NONE_WHEN_ADD)
 
 
 # Check name method for potential errors
 def check_product_name(product_name):
     if product_name is None or type(product_name) is not str:
-        raise NameException('Name should be a string')
+        raise NameException(NAME_NOT_STRING)
 
 
 class Dao:
@@ -41,7 +42,7 @@ class Dao:
         check_product_name(product_name)
         product = self.get_product_by_name(product_name)
         if product is not None:
-            raise ConflictException('This name is already used by another product')
+            raise ConflictException(NAME_CONFLICT)
 
     # Get method
     def get_product_by_id(self, product_id):
@@ -83,11 +84,11 @@ class Dao:
         check_product_name(product_name)
 
         if self.get_product_by_id(product_id) is None:
-            raise ProductException('This product does not exist')
+            raise ProductException(PRODUCT_NOT_FOUND)
 
         product = self.get_product_by_name(product_name)
         if product is not None and product.id != product_id:
-            raise ConflictException('This name is already used by another product')
+            raise ConflictException(NAME_CONFLICT)
 
         conn = get_db_connection(test=self.test)
         conn.execute("""Update Products set name=?, quantity=? where id=?""",
@@ -112,7 +113,7 @@ class Dao:
         check_product_id(product_id)
         product = self.get_product_by_id(product_id)
         if product is None:
-            raise ProductException('Product does not exist')  # CUSTOM EXCEPTION
+            raise ProductException(PRODUCT_NOT_FOUND)  # CUSTOM EXCEPTION
 
         conn = get_db_connection(test=self.test)
         conn.execute("""Delete from Products where id=?""", (product_id,))

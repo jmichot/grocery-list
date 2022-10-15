@@ -8,7 +8,7 @@ from src.exceptions.NameException import NameException
 from src.exceptions.QuantityException import QuantityException
 
 
-class TestDao():
+class TestDao:
     test_id = 3
     test_quantity = 1
     test_name = "TestName"

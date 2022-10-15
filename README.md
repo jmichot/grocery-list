@@ -27,4 +27,4 @@ mutmut run #Run mutation testing
 mutmut html #Export Result into html/ folder
 ```
 
-[Rapport](report.md)
+[Rapport](Report.md)

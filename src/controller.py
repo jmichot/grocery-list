@@ -1,3 +1,4 @@
+import json
 from http.client import CONFLICT, NOT_FOUND, OK, BAD_REQUEST,INTERNAL_SERVER_ERROR
 from flask import render_template, jsonify, Response, request
 
@@ -26,7 +27,7 @@ def configure_routes(app, test=False): # pragma: no mutate
     @app.route('/product/<id>', methods=['PUT'])
     def modify_product(id):
         try:
-            dao.update_product(int(id), request.json['name'], request.json['quantity'])
+            dao.update_product(int(id), request.json['name'], int(request.json['quantity']))
             return Response(status=OK)
         except KeyError:
             return Response(status=BAD_REQUEST, response=MISSING_ARGUMENTS)
@@ -42,7 +43,7 @@ def configure_routes(app, test=False): # pragma: no mutate
     @app.route('/product', methods=['POST'])
     def add_product():
         try:
-            product = Product(None, request.json['quantity'], request.json['name'])
+            product = Product(None, int(request.json['quantity']), request.json['name'])
             dao.add_product(product)
             return Response(status=OK)
         except KeyError:

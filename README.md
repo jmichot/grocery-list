@@ -16,7 +16,7 @@ To start the project, run this command :
 
 ```
 python3 init_db.py reset_db
-python3 __init__.py
+python3 app.py
 ```
 
 To run tests, execute this command from root:

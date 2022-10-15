@@ -3,6 +3,7 @@ __pycache__/
 .pytest_cache/
 tests/functional/.pytest_cache/
 tests/unit/.pytest_cache/
+.mutmut-cache
 html/
 *.py[cod]
 *$py.class

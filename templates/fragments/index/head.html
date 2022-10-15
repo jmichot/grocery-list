@@ -5,7 +5,7 @@
     
         <q-toolbar-title>Header</q-toolbar-title>
     
-        <q-btn color="deep-orange" glossy label="Add Product" @click="addProductModal=true"></q-btn>
+        <q-btn color="deep-orange" glossy label="Add Product" @click="addProductModal=true; new_name=null; new_quantity=null"></q-btn>
 
         <q-input dark dense standout label="Search" v-model="searchText" input-class="text-right" class="q-ml-md" @keyup.enter="searchProducts(searchText)">
             <template v-slot:append>

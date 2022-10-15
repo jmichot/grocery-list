@@ -30,7 +30,7 @@ const { useQuasar } = Quasar
         new_name: ref(null),
         new_quantity: ref(null),
         productListClone: ref([]),
-        addProductModal: ref(false),
+        addProductModal: ref(false)
 
       }
     },

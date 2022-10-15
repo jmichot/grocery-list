@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-**/.pytest_cache/
+.pytest_cache/
+tests/functional/.pytest_cache/
+tests/unit/.pytest_cache/
 html/
 *.py[cod]
 *$py.class

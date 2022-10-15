@@ -67,7 +67,7 @@ Cela a pour finalité d'augmenter le test coverage de notre code puisqu'on a pu 
 
 L'exécution du mutation testing a généré 87 mutants, suite à cela 83 mutants ont été tués et 4 ont survécus
 
-![Mutation testing result](https://github.com/jmichot/grocery-list/blob/main/res/mutmut.png?raw=true)
+![Mutation testing result](https://github.com/jmichot/grocery-list/blob/main/res/mutmut0.png?raw=true)
 
 Un exemple de mutant non tué qui nous a permi de créer un nouveau cas de test :
 
@@ -109,3 +109,5 @@ def test_check_product_name_failed_int_type(self):
     with pytest.raises(NameException):
         check_product_name(1)
 ```
+
+![Mutation testing result](https://github.com/jmichot/grocery-list/blob/main/res/mutmut.png?raw=true)

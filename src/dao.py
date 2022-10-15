@@ -35,7 +35,7 @@ def check_product_name(product_name):
 
 class Dao:
 
-    def __init__(self, test=False):
+    def __init__(self, test=False): # pragma: no mutate
         self.test = test
 
     def check_name_already_exist(self, product_name):

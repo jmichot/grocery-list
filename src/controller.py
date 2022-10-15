@@ -11,7 +11,7 @@ from src.model.product import Product
 from src.constants import *
 
 
-def configure_routes(app, test=False):
+def configure_routes(app, test=False): # pragma: no mutate
     dao = Dao(test=test)
 
     @app.route('/product', methods=['GET'])

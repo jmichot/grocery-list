@@ -1,10 +1,10 @@
 # grocery-list
 
 ## Fait par : 
-Kozlov Antoine
-Pochet Antoine
-Michot Julien
-Raya Hassan
+Kozlov Antoine  
+Pochet Antoine  
+Michot Julien  
+Raya Hassan  
 
 ## Dependencies
 

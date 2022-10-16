@@ -1,5 +1,11 @@
 # grocery-list
 
+## Fait par : 
+Kozlov Antoine
+Pochet Antoine
+Michot Julien
+Raya Hassan
+
 ## Dependencies
 
 Flask dependency is used in this project, if you don't have it run this :

@@ -223,13 +223,6 @@ class TestRoutes:
 
     # =====================================================#
 
-    def test_default_url(self):
-        with app.app_context():
-            response = self.client.get('/')
-            ### assert with render template index.html
-
-    # =====================================================#
-
     def test_wrong_url(self):
         response = self.client.get('/bad/url')
         assert response.status_code == 404

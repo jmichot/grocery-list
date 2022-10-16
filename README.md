@@ -19,7 +19,7 @@ python3 init_db.py reset_db
 python3 app.py
 ```
 
-To run tests, execute this command from root:
+To run tests, execute this command from root :
 
 ```
 pytest
@@ -27,4 +27,6 @@ mutmut run #Run mutation testing
 mutmut html #Export Result into html/ folder
 ```
 
-[Rapport](Report.md)
+## Report
+
+You can find our testing report [here](Report.md).

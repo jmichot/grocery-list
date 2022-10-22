@@ -49,39 +49,6 @@ python3 app.py test
 npx cypress run
 ```
 
-```
-(Results)
-
-  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Tests:        13                                                                               │
-  │ Passing:      13                                                                               │
-  │ Failing:      0                                                                                │
-  │ Pending:      0                                                                                │
-  │ Skipped:      0                                                                                │
-  │ Screenshots:  0                                                                                │
-  │ Video:        true                                                                             │
-  │ Duration:     9 seconds                                                                        │
-  │ Spec Ran:     grocery.cy.js                                                                    │
-  └────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-
-====================================================================================================
-
-  (Run Finished)
-
-
-       Spec                                              Tests  Passing  Failing  Pending  Skipped
-  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ √  grocery.cy.js                            00:09       13       13        -        -        - │
-  └────────────────────────────────────────────────────────────────────────────────────────────────┘
-    √  All specs passed!                        00:09       13       13        -        -        -
-
-```
-
-> ![Results](cypress/res.png)
-
-> [Video](cypress/videos/grocery.cy.js.mp4)
-
 ## Report
 
 You can find our testing report [here](Report.md).

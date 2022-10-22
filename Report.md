@@ -5,9 +5,42 @@
 
 ### Front
 
-Nous n'avons pas testé le front qui est en VueJS car cela demandait d'apprendre une nouvelle manière de tester qui
-aurait été couteuse en temps et nous avons préféré nous focaliser sur les units tests et les functional tests. 
-Cependant, avec plus de temps, nous aurions réalisé les tests du front grâce à l'outil de test Jest.
+Nous avons utilisé Cypress pour effectuer des tests E2E :  
+> [Test file](cypress/e2e/grocery.cy.js)
+
+```
+(Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        13                                                                               │
+  │ Passing:      13                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     9 seconds                                                                        │
+  │ Spec Ran:     grocery.cy.js                                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ √  grocery.cy.js                            00:09       13       13        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    √  All specs passed!                        00:09       13       13        -        -        -
+
+```
+
+> ![Results](cypress/res.png)
+
+> [Video](cypress/videos/grocery.cy.js.mp4)
+
 
 ### Mutation testing
 

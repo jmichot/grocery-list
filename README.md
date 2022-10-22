@@ -33,6 +33,15 @@ mutmut run #Run mutation testing
 mutmut html #Export Result into html/ folder
 ```
 
+To run Cypress test, execute this command from root:
+
+```
+python3 init_db.py reset_db True
+python3.10.exe app.py test
+
+```
+
+
 ## Report
 
 You can find our testing report [here](Report.md).

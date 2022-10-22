@@ -37,8 +37,8 @@ To run Cypress test, execute this command from root:
 
 ```
 python3 init_db.py reset_db True
-python3.10.exe app.py test
-
+python3 app.py test
+cypress run --spec ./cypress/e2e/grocery.cy.js
 ```
 
 

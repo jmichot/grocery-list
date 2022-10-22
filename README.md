@@ -80,6 +80,8 @@ npx cypress run
 
 > ![Results](cypress/res.png)
 
+> [Video](cypress/videos/grocery.cy.js.mp4)
+
 ## Report
 
 You can find our testing report [here](Report.md).

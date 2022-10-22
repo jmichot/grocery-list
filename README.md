@@ -36,11 +36,49 @@ mutmut html #Export Result into html/ folder
 To run Cypress test, execute this command from root:
 
 ```
+# install packages
+npm install
+
+# init db test
 python3 init_db.py reset_db True
+
+# run application at test profile
 python3 app.py test
-cypress run --spec ./cypress/e2e/grocery.cy.js
+
+# open project in cypress and start tests
+npx cypress run
 ```
 
+```
+(Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        13                                                                               │
+  │ Passing:      13                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     9 seconds                                                                        │
+  │ Spec Ran:     grocery.cy.js                                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ √  grocery.cy.js                            00:09       13       13        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    √  All specs passed!                        00:09       13       13        -        -        -
+
+```
+
+> ![Results](cypress/res.png)
 
 ## Report
 
